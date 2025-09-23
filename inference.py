@@ -4,7 +4,6 @@ import yaml
 import numpy as np
 
 from peft import PeftModel, LoraConfig, get_peft_model
-from audio import load_wav, norm_wav, wav2mel
 from text import split_text, Text2ID
 from models import *
 from plbert import load_plbert
@@ -204,41 +203,3 @@ class LoraInference:
 
         wavs = np.concatenate(wavs)     
         return wavs
-
-
-class VoiceEncoder:
-    def __init__(self, checkpoint_path, config_path):
-        self.model, self.sr = self.load_model(checkpoint_path, config_path)
-
-    def load_model(self, checkpoint_path, config_path):
-        config = recursive_munch(yaml.safe_load(open(config_path)))
-        sr = config.preprocess_params.sr
-        model = build_voice_encoder(config.model_params)
-
-        state_dicts = torch.load(checkpoint_path, map_location='cpu')['net']
-        for key, module in model.items():
-            state_dict = state_dicts[key]
-            state_dict = {k[7:]: v for k, v in state_dict.items()} if list(state_dict.keys())[0].startswith('module.') else state_dict
-            module.load_state_dict(state_dict, strict=False)
-            module.eval().cuda()
-
-        return model, sr
-
-    def compute_ref_emb(self, ref_speaker_audio_path, ref_prosody_audio_path=''):
-        wav_s = load_wav(ref_speaker_audio_path, sr=self.sr)
-        wav_s = norm_wav(wav_s)
-        melspec_s = wav2mel(wav_s).cuda()
-
-        if ref_prosody_audio_path and ref_prosody_audio_path != ref_speaker_audio_path:
-            wav_p = load_wav(ref_prosody_audio_path, sr=self.sr)
-            wav_p = norm_wav(wav_p)
-            melspec_p = wav2mel(wav_p).cuda()
-        else:
-            melspec_p = melspec_s
-
-        with torch.no_grad():
-            ref_s = self.model.style_encoder(melspec_s.unsqueeze(1))
-            ref_p = self.model.predictor_encoder(melspec_p.unsqueeze(1))
-
-        ref_embedding = torch.cat([ref_s, ref_p], dim=1)
-        return ref_embedding
