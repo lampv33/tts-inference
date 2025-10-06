@@ -187,7 +187,7 @@ class LoraInference:
 
         return wav, s_pred
 
-    def gen_long_wav(self, text, ref_embedding, ref_text='', speed=1, alpha=0.3, beta=0.7, diffusion_steps=5, embedding_scale=1, t=0.7, max_len=512, lora_dir=None):
+    def gen_long_wav(self, text, ref_embedding, ref_text='', speed=1, alpha=0.3, beta=0.7, diffusion_steps=5, embedding_scale=1, t=0.7, max_len=768, lora_dir=None):
         model = self.models_manager.get_model(lora_dir)
         wavs = []
         s_prev = ref_embedding

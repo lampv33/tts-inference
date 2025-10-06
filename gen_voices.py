@@ -22,17 +22,17 @@ def normalize_text_api(text):
         return None
 
 
-def text2speech(voice_name, style, model, voice_encoder, lora_dir=None, text='', speed=1, max_len=512, save_embedding=False, save_audio=True):
+def text2speech(voice_name, style, model, voice_encoder, lora_dir=None, text='', alpha=0, beta=0, speed=1, max_len=512, save_embedding=False, save_audio=True):
     ref_embedding, text_demo = prepare_voices(voice_name, style, voice_encoder)
     if not text:
-        text = text_demo
+        text = text_demo.lower()
         save_embedding = save_audio = True
     else:
         text = normalize_text_api(text).lower()
     print(text)
     
     start_time = time.time()
-    wav = model.gen_long_wav(text, ref_embedding, speed=speed, max_len=max_len, lora_dir=lora_dir)
+    wav = model.gen_long_wav(text, ref_embedding, alpha=alpha, beta=beta, speed=speed, max_len=max_len, lora_dir=lora_dir)
     print('\nrtf:', round((time.time()-start_time)/(len(wav)/24000), 3))
 
     display(ipd.Audio(wav, rate=voice_encoder.sr, normalize=True))
