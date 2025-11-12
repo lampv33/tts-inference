@@ -14,7 +14,7 @@ ref_huonglinh_thoisu = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segmen
 ref_huonglinh_betterversion = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/huonglinh-betterversion/1jlHEYRWg6I_0.wav'
 ref_huonglinh_phephim = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/huonglinh-phephim/-fUbcfFXGCM_18.wav'
 #ref_huonglinh_phephim = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/huonglinh-phephim/1Ig_wagTfpU_0.wav'
-ref_huonglinh_spiderum = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/huonglinh-spiderum/2gtZpukMrn0_4.wav'
+ref_huonglinh_spiderum = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/huonglinh-spiderum/2gtZapukMrn0_4.wav'
 
 ref_vietha_vov = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/vietha-vov/P1_7.wav'
 ref_vietha_thoisu = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/vietha-thoisu/1_0.wav'
@@ -58,9 +58,9 @@ ref_leyen_nguoithanhcong = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/se
 ref_spiderum_minhthi = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/spiderum-minhthi/acWG9HRj8-0_0.wav'
 ref_spiderum_nam = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/spiderum-nam/C6QhSP9SlI0_4.wav'
 
-ref_miencotich = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/miencotich_gemini-2.5-pro/KZPfVyzE-HU_940.wav'
+ref_miencotich = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/miencotich_gemini-2.5-pro/KZPfVyzE-HU_0001.wav'
 #ref_quatangtamhon = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/quatangtamhon_gemini-2.5-pro/4Hdzjo3kulc_45.wav'
-ref_quatangtamhon = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/quatangtamhon_gemini-2.5-pro/4Hdzjo3kulc_50.wav'
+ref_quatangtamhon = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/quatangtamhon_gemini-2.5-pro/4Hdzjo3kulc_0047.wav'
 
 
 def prepare_anhquan(style, model):
@@ -110,7 +110,7 @@ def prepare_thanhha(style, model):
         text_demo = 'tổng bí_thư tô lâm cũng nhấn_mạnh vai_trò của hiệp_hội dữ_liệu quốc_gia trong việc thúc_đẩy phát_triển và khai_thác dữ_liệu , đồng_thời đề_xuất bảy nhiệm_vụ trọng_tâm cho hiệp_hội để thực_hiện sứ_mệnh này'
     elif style == 'callbot':
         ref_embedding = model.compute_ref_emb(ref_vietha_callbot)
-        text_demo = 'Dạ em chào chị. Cho em hỏi đây có phải số điện thoại của chị Lê Thu Hương không ạ? * Dạ Em là Hà gọi từ Viện Thẩm Mỹ Hoa Anh Đào. Em gọi để xác nhận lịch hẹn phun môi cô-la-den của mình, không biết là chị có tiện nghe máy không ạ?'
+        text_demo = 'dạ a-lô cho em hỏi anh Lâm đang nghe máy đúng không ạ . à dạ em_chào_anh_Lâm , em là Thanh Hà gọi từ ngân_hàng vi-pi banh , em có thể xin anh khoảng hai phút để trao_đổi được không ạ .'
     elif style == 'podcast_soft':
         ref_embedding = model.compute_ref_emb_mix(ref_vietha_spiderum_soft, ref_azaudiobook, ref_prosody_audio_path_2=ref_beyondlimit_ngalevi, ratio=3)
         text_demo = 'nếu ai đó chia_sẻ với bạn một chuyện nhạy_cảm hay bộc_bạch một thông_điệp xúc_động , bạn có thể bối_rối không biết phải nói gì . nhưng cứ bình_tĩnh , bạn không cần phải giải_quyết vấn_đề của họ hay đưa ra một lời_khuyên thông_thái ngay lập tức'
@@ -178,8 +178,11 @@ def prepare_maiyen(style, model):
     elif style == 'podcast_neutral':
         ref_embedding = model.compute_ref_emb_mix(ref_leyen_nguoithanhcong, ref_leyen_nguoithanhcong, ref_prosody_audio_path_2=ref_spiderum_minhthi)
         text_demo = 'trong khi đó , vì bắt_buộc phải tự_mình thoát khỏi nghịch_cảnh , những người xuất_thân bình_dân sẽ phát_huy khả_năng sáng_tạo tốt hơn . họ cũng trân_trọng và chớp lấy cơ_hội nhanh hơn'
-    elif style == 'story':
-        ref_embedding = model.compute_ref_emb_mix(ref_miencotich, ref_miencotich, ref_prosody_audio_path_2=ref_miencotich)
+    elif style == 'story_soft':
+        ref_embedding = model.compute_ref_emb_mix(ref_leyen_voizfm, ref_miencotich, ref_prosody_audio_path_2=ref_miencotich)
+        text_demo = 'Cô giáo thấy cảnh đó , mỉm cười hiền từ và nói trước lớp . Cả lớp thấy đó , Bảo Phúc không chỉ là người học giỏi , mà còn là một người bạn dũng cảm và tuyệt vời . Sự dũng cảm không chỉ là cứu người khỏi nguy hiểm , mà còn là sự sẵn lòng giúp đỡ , chia sẻ và nâng đỡ nhau trong cuộc sống và học tập .'
+    elif style == 'story_neutral':
+        ref_embedding = model.compute_ref_emb_mix(ref_leyen_voizfm, ref_quatangtamhon, ref_prosody_audio_path_2=ref_quatangtamhon)
         text_demo = 'Cô giáo thấy cảnh đó , mỉm cười hiền từ và nói trước lớp . Cả lớp thấy đó , Bảo Phúc không chỉ là người học giỏi , mà còn là một người bạn dũng cảm và tuyệt vời . Sự dũng cảm không chỉ là cứu người khỏi nguy hiểm , mà còn là sự sẵn lòng giúp đỡ , chia sẻ và nâng đỡ nhau trong cuộc sống và học tập .'
     return ref_embedding, text_demo
 

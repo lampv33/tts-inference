@@ -50,7 +50,7 @@ class VoiceEncoder:
 
         return mel_tensor
 
-    def compute_ref_emb(self, ref_speaker_audio_path, ref_prosody_audio_path=''):
+    def compute_ref_emb(self, ref_speaker_audio_path, ref_prosody_audio_path='', display_audio=True):
         wav_s = load_wav(ref_speaker_audio_path, sr=self.sr)
         wav_s = norm_wav(wav_s)
         melspec_s = self.wav2mel(wav_s).cuda()
@@ -68,9 +68,11 @@ class VoiceEncoder:
             ref_p = self.model.predictor_encoder(melspec_p.unsqueeze(1))
 
         ref_embedding = torch.cat([ref_s, ref_p], dim=1)
-
-        display(Audio(ref_speaker_audio_path))
-        display(Audio(ref_prosody_audio_path))
+        
+        if display_audio:
+            display(Audio(ref_speaker_audio_path))
+            if ref_prosody_audio_path != ref_speaker_audio_path:
+                display(Audio(ref_prosody_audio_path))
 
         return ref_embedding
     
