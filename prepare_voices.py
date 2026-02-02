@@ -61,13 +61,16 @@ ref_spiderum_nam = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/s
 ref_miencotich = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/miencotich_gemini-2.5-pro/KZPfVyzE-HU_0001.wav'
 #ref_quatangtamhon = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/quatangtamhon_gemini-2.5-pro/4Hdzjo3kulc_45.wav'
 ref_quatangtamhon = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/quatangtamhon_gemini-2.5-pro/4Hdzjo3kulc_0047.wav'
+ref_quatangtamhon_2 = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/quatangtamhon_gemini-2.5-pro/3SZ3Y9xKlKc_0002.wav'
+ref_chunchin = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/chunchin_gemini-2.5-pro/0-3mmuud9mU_0004.wav'
 
+ref_numiennam_ailab = '/mnt/nfs-shared/kilm/users/lampv/prepare_data_tts/segments/ailab/14.wav'
 
 def prepare_anhquan(style, model):
     if style == 'neutral':
         ref_audio = ref_anhquan_neutral
         text_demo = 'chỉ trong vòng sáu tháng qua , đô-nan trăm đã kết_thúc nhiều cuộc_chiến , tự_hào nhận mình là tổng_thống hòa_bình , sau khi chính_thức công_bố việc hai quốc_gia thái_lan và cam-pu-chia đạt được thỏa_thuận ngừng bắn'
-    elif style == 'neutral2':
+    elif style == 'neutral_2':
         ref_audio = ref_anhquan_neutral_2
         text_demo = 'phản_ứng từ phía thái_lan cho thấy sự hiệu_quả của chiến_lược này . quyền thủ_tướng thái_lan phum-tham quế-cha-da-chai cho biết trong cuộc điện_đàm kéo_dài ba_mươi phút , tổng_thống trăm đã ca_ngợi hành_động của băng-cốc là dũng_cảm và gương_mẫu trong việc duy_trì hòa_bình'
     elif style == 'energetic':
@@ -117,6 +120,10 @@ def prepare_thanhha(style, model):
     #elif style == 'podcast_energetic':
     #    ref_embedding = model.compute_ref_emb(ref_vietha_spiderum_energetic)
     #    text_demo = 'nếu ai đó chia_sẻ với bạn một chuyện nhạy_cảm hay bộc_bạch một thông_điệp xúc_động , bạn có thể bối_rối không biết phải nói gì . nhưng cứ bình_tĩnh , bạn không cần phải giải_quyết vấn_đề của họ hay đưa ra một lời_khuyên thông_thái ngay lập tức'
+    elif style == 'story_soft':
+        ref_embedding = model.compute_ref_emb_mix(ref_vietha_spiderum_soft, ref_chunchin, ref_prosody_audio_path_2=ref_azaudiobook, ratio=3)
+        text_demo = 'Cô giáo thấy cảnh đó , mỉm cười hiền từ và nói trước lớp . Cả lớp thấy đó , Bảo Phúc không chỉ là người học giỏi , mà còn là một người bạn dũng cảm và tuyệt vời . Sự dũng cảm không chỉ là cứu người khỏi nguy hiểm , mà còn là sự sẵn lòng giúp đỡ , chia sẻ và nâng đỡ nhau trong cuộc sống và học tập .'
+    
     return ref_embedding, text_demo
 
 
@@ -178,11 +185,20 @@ def prepare_maiyen(style, model):
     elif style == 'podcast_neutral':
         ref_embedding = model.compute_ref_emb_mix(ref_leyen_nguoithanhcong, ref_leyen_nguoithanhcong, ref_prosody_audio_path_2=ref_spiderum_minhthi)
         text_demo = 'trong khi đó , vì bắt_buộc phải tự_mình thoát khỏi nghịch_cảnh , những người xuất_thân bình_dân sẽ phát_huy khả_năng sáng_tạo tốt hơn . họ cũng trân_trọng và chớp lấy cơ_hội nhanh hơn'
+    elif style == 'story':
+        ref_embedding = model.compute_ref_emb(ref_leyen_voizfm)
+        text_demo = 'Cô giáo thấy cảnh đó , mỉm cười hiền từ và nói trước lớp . Cả lớp thấy đó , Bảo Phúc không chỉ là người học giỏi , mà còn là một người bạn dũng cảm và tuyệt vời . Sự dũng cảm không chỉ là cứu người khỏi nguy hiểm , mà còn là sự sẵn lòng giúp đỡ , chia sẻ và nâng đỡ nhau trong cuộc sống và học tập .'
     elif style == 'story_soft':
-        ref_embedding = model.compute_ref_emb_mix(ref_leyen_voizfm, ref_miencotich, ref_prosody_audio_path_2=ref_miencotich)
+        ref_embedding = model.compute_ref_emb_mix(ref_leyen_voizfm, ref_miencotich, ref_prosody_audio_path_2=ref_quatangtamhon_2)
         text_demo = 'Cô giáo thấy cảnh đó , mỉm cười hiền từ và nói trước lớp . Cả lớp thấy đó , Bảo Phúc không chỉ là người học giỏi , mà còn là một người bạn dũng cảm và tuyệt vời . Sự dũng cảm không chỉ là cứu người khỏi nguy hiểm , mà còn là sự sẵn lòng giúp đỡ , chia sẻ và nâng đỡ nhau trong cuộc sống và học tập .'
     elif style == 'story_neutral':
-        ref_embedding = model.compute_ref_emb_mix(ref_leyen_voizfm, ref_quatangtamhon, ref_prosody_audio_path_2=ref_quatangtamhon)
+        ref_embedding = model.compute_ref_emb_mix(ref_leyen_voizfm, ref_quatangtamhon, ref_leyen_voizfm, ref_prosody_audio_path_2=ref_quatangtamhon)
+        text_demo = 'Cô giáo thấy cảnh đó , mỉm cười hiền từ và nói trước lớp . Cả lớp thấy đó , Bảo Phúc không chỉ là người học giỏi , mà còn là một người bạn dũng cảm và tuyệt vời . Sự dũng cảm không chỉ là cứu người khỏi nguy hiểm , mà còn là sự sẵn lòng giúp đỡ , chia sẻ và nâng đỡ nhau trong cuộc sống và học tập .'
+    elif style == 'ailab_story_neutral':
+        ref_embedding = model.compute_ref_emb(ref_numiennam_ailab, ref_quatangtamhon)
+        text_demo = 'Cô giáo thấy cảnh đó , mỉm cười hiền từ và nói trước lớp . Cả lớp thấy đó , Bảo Phúc không chỉ là người học giỏi , mà còn là một người bạn dũng cảm và tuyệt vời . Sự dũng cảm không chỉ là cứu người khỏi nguy hiểm , mà còn là sự sẵn lòng giúp đỡ , chia sẻ và nâng đỡ nhau trong cuộc sống và học tập .'
+    elif style == 'ailab_story_soft':
+        ref_embedding = model.compute_ref_emb(ref_numiennam_ailab, ref_leyen_voizfm)
         text_demo = 'Cô giáo thấy cảnh đó , mỉm cười hiền từ và nói trước lớp . Cả lớp thấy đó , Bảo Phúc không chỉ là người học giỏi , mà còn là một người bạn dũng cảm và tuyệt vời . Sự dũng cảm không chỉ là cứu người khỏi nguy hiểm , mà còn là sự sẵn lòng giúp đỡ , chia sẻ và nâng đỡ nhau trong cuộc sống và học tập .'
     return ref_embedding, text_demo
 
@@ -240,3 +256,4 @@ def prepare_voices(voice_name, style, model):
         ref_embedding, text_demo = prepare_zalo(voice_name, model)
 
     return ref_embedding, text_demo
+

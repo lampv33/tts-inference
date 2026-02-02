@@ -1,4 +1,6 @@
 import requests
+import string
+from urllib.parse import quote
 import os
 #os.environ['http_proxy'] = 'http://10.60.28.99:81'
 #os.environ['https_proxy'] = 'http://10.60.28.99:81'
@@ -11,12 +13,33 @@ from CocCocTokenizer import PyTokenizer
 
 T = PyTokenizer(load_nontone_data=True)
 
+vocab_file = 'word_vi_fix.txt'
+with open(vocab_file, 'r', encoding='utf-8') as f:
+    vocab_list = [line.strip() for line in f.readlines()]
+
 
 def tokenize(text):
     text = text.replace('_', '#')
     text = ' '.join(w for w in T.word_tokenize(text))
     text = text.replace('#', '_').replace(' _ ', '_').replace(' - ', '-')
     return text
+
+
+def g2p(word):
+    """
+    Handle out-of-vocabulary words using the G2P API.
+    """
+    try:
+        encoded_word = quote(word)
+        url = f"http://0.0.0.0:8088/norm_oov/{encoded_word}"
+        response = requests.get(url, timeout=10)
+        if response.status_code != 200:
+            print(response)
+            return word
+        return (response.json()).get("result", word)
+    except Exception as e:
+        print(f"Error calling OOV API for word '{word}': {e}")
+        return word
 
 
 def normalize_text_api(text):
@@ -38,10 +61,21 @@ def normalize_text_api(text):
         response = requests.post(url, data=payload, headers=headers)
         response.raise_for_status()
         data = response.json()
-        norm_text = data.get('normText')
-        return norm_text
+        text = data.get('normText')
+        text = text.lower()
+        for s in string.punctuation:
+            if s not in '_-':
+                text = text.replace(s, ' ' + s + ' ')
+        words = text.split()
+        text = ''
+        for w in words:
+            if w and '-' not in w and '_' not in w and w not in vocab_list and w not in string.punctuation and all(s not in '0123456789' for s in w):
+                w = g2p(w)
+            text += w + ' '
+        return text
     except requests.exceptions.RequestException as e:
         print(f"Đã xảy ra lỗi khi gửi yêu cầu: {e}")
+        text = tokenize(text).lower()
         return text
 
 
@@ -51,7 +85,7 @@ def text2speech(voice_name, style, model, voice_encoder, lora_dir=None, text='',
         text = text_demo.lower()
         save_embedding = save_audio = True
     else:
-        text = normalize_text_api(text).lower()
+        text = normalize_text_api(text)
     print(text)
     
     start_time = time.time()
@@ -73,3 +107,5 @@ def text2speech(voice_name, style, model, voice_encoder, lora_dir=None, text='',
         filename = f'{voice_name}_{style}.wav'
         filepath = os.path.join(outdir, filename)
         wavfile.write(filepath, voice_encoder.sr, wav)
+    
+    return wav
